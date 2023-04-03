@@ -1,26 +1,27 @@
 package com.lesnoy.telegrambot.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lesnoy.telegrambot.config.BotConfig;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.io.IOException;
-
 @Component
 public class SpotiSayBot extends TelegramLongPollingBot {
 
-    private final BotConfig config;
+    private final Logger logger = LoggerFactory.getLogger(SpotiSayBot.class);
 
-    public SpotiSayBot(BotConfig config) {
+    private final BotConfig config;
+    private final SpotifyAPIService spotifyAPIService;
+
+    public SpotiSayBot(BotConfig config, SpotifyAPIService spotifyAPIService) {
         super(config.getBotToken());
         this.config = config;
+        this.spotifyAPIService = spotifyAPIService;
     }
 
     @Override
@@ -29,43 +30,21 @@ public class SpotiSayBot extends TelegramLongPollingBot {
 
             long chatId = update.getMessage().getChatId();
             String username = update.getMessage().getFrom().getUserName();
-            System.out.println("FROM - " + username);
+
             SendMessage sendMessage = new SendMessage();
             sendMessage.setChatId(chatId);
 
-            if (update.getMessage().getText().equals("auth")) {
-                try {
-                    OkHttpClient client = new OkHttpClient();
+            logger.info("Request from '" + username + "', chat id - " + chatId);
+            String response = switch (update.getMessage().getText()) {
+                case "/start" -> spotifyAPIService.start(username);
+                case "/track" -> spotifyAPIService.getCurrentTrack(username);
+                default -> "Неизвестная команда";
+            };
 
-                    Request request = new Request.Builder()
-                            .url("http://localhost:8080/auth/registration?username=" + username)
-                            .build();
+            sendMessage.setParseMode(ParseMode.HTML);
+            sendMessage.setText(response);
 
-                    Response response = client.newCall(request).execute();
-
-                    String responseMessage = response.body().string();
-                    System.out.println(responseMessage);
-                    sendMessage.setText(responseMessage);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            } else if (update.getMessage().getText().equals("track")) {
-                try {
-                    OkHttpClient client = new OkHttpClient();
-
-                    Request request = new Request.Builder()
-                            .url("http://localhost:8080/api/v1/track?username=" + username)
-                            .build();
-
-                    Response response = client.newCall(request).execute();
-
-                    String responseMessage = response.body().string();
-
-                    sendMessage.setText(responseMessage);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+            logger.info("Response to '" + username + "', chat id - " + chatId + " '" + response + "'");
             try {
                 execute(sendMessage);
             } catch (TelegramApiException e) {
