@@ -18,8 +18,6 @@ public class MainController {
 
     @GetMapping("/track")
     public String getCurrentTrack(@RequestParam("username") String username) {
-        System.out.println("TRACK FROM USERNAME - " + username);
-        String track = spotifyService.getCurrentTrack(username);
-        return track;
+        return spotifyService.getCurrentTrack(username);
     }
 }

@@ -6,6 +6,8 @@ import com.lesnoy.spotifyapi.entity.Track;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -13,6 +15,8 @@ import java.util.Optional;
 
 @Service
 public class SpotifyService {
+
+    private final Logger logger = LoggerFactory.getLogger(SpotifyService.class);
 
     private final TokenRepository tokenRepository;
 
@@ -23,10 +27,11 @@ public class SpotifyService {
     public String getCurrentTrack(String username) {
         Optional<JwtToken> token = tokenRepository.findById(username);
         if (token.isPresent()) {
-            System.out.println("TOKEN - " + token);
+            logger.info("Request the Spotify API to retrieve a '" + username + "' track");
             return spotifyTrackRequest(token.get().getAccessToken());
         } else {
-            return null;
+            logger.info("User '" + username + "' is not authorized");
+            return "Unauthorized";
         }
     }
 
@@ -44,8 +49,9 @@ public class SpotifyService {
             String responseMessage = response.body().string();
             return objectMapper.readValue(responseMessage, Track.class).toString();
         } catch (IOException e) {
-            System.out.println("RESPONSE EXCEPTION");
+            logger.error("Spotify API 'Get Currently Playing Track' error");
+            e.printStackTrace();
         }
-        return "ERROR";
+        return "Not Found";
     }
 }

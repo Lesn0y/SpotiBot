@@ -3,6 +3,8 @@ package com.lesnoy.spotifyapi.services;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lesnoy.spotifyapi.entity.JwtToken;
 import okhttp3.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +13,8 @@ import java.util.Base64;
 
 @Service
 public class OAuthService {
+
+    private final Logger logger = LoggerFactory.getLogger(OAuthService.class);
 
     @Value("${spotify.client-id}")
     private String clientId;
@@ -26,9 +30,11 @@ public class OAuthService {
     public void requestAccessToken(String code, String username) {
         JwtToken token = authorizationRequest(code);
         if (token != null) {
-            System.out.println("USERNAME " + username);
             token.setUsername(username);
             tokenRepository.save(token);
+            logger.info("Save user '" + username + "' with token '" + token + "'");
+        } else {
+            logger.info("User '" + username + " has not been saved");
         }
     }
 
@@ -52,7 +58,7 @@ public class OAuthService {
             return objectMapper.readValue(responseBody.string(), JwtToken.class);
 
         } catch (IOException e) {
-            System.out.println("RESPONSE EXCEPTION");
+            e.printStackTrace();
         }
         return null;
     }
