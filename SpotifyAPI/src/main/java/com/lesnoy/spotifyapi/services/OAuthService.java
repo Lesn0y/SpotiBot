@@ -44,7 +44,7 @@ public class OAuthService {
         Request request = new Request.Builder()
                 .url("https://accounts.spotify.com/api/token?" +
                         "grant_type=authorization_code&" +
-                        "redirect_uri=https://spotibot-production-f165.up.railway.app/success&" +
+                        "redirect_uri=https://spotibot-production-f13d.up.railway.app/success&" +
                         "code=" + code)
                 .header("Authorization", getAuthorizationValue())
                 .header("Content-Type", "application/x-www-form-urlencoded")

@@ -10,4 +10,4 @@ spring:
 spotify:
   client-id: 8e2367a6aa6747869f90cfa61dc6861f
   client-secret: ea7d1027c73a4222995ea6cd8d735206
-  registration-url: https://accounts.spotify.com/authorize?client_id=8e2367a6aa6747869f90cfa61dc6861f&response_type=code&redirect_uri=https://spotibot-production-f165.up.railway.app/success&scope=user-read-playback-state&state=
+  registration-url: https://accounts.spotify.com/authorize?client_id=8e2367a6aa6747869f90cfa61dc6861f&response_type=code&redirect_uri=https://spotibot-production-f13d.up.railway.app/success&scope=user-read-playback-state&state=
