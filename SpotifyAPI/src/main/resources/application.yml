@@ -1,3 +1,12 @@
+spring:
+  data:
+    redis:
+      url: redis://default:Y3t8O6j5EfkmmNhM2HbQ@containers-us-west-39.railway.app:6242
+      host: containers-us-west-39.railway.app
+      username: default
+      password: Y3t8O6j5EfkmmNhM2HbQ
+      port: 6242
+
 spotify:
   client-id: 8e2367a6aa6747869f90cfa61dc6861f
   client-secret: ea7d1027c73a4222995ea6cd8d735206
