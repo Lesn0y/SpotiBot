@@ -7,6 +7,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class TrackDeserializer extends StdDeserializer<Track> {
 
@@ -24,8 +27,14 @@ public class TrackDeserializer extends StdDeserializer<Track> {
         JsonNode jsonNode = jp.getCodec().readTree(jp);
         JsonNode itemNod = jsonNode.get("item");
         JsonNode authorNode = itemNod.get("artists");
-        String author = authorNode.elements().next().get("name").asText();
+
+        Iterator<JsonNode> authorsIt = authorNode.elements();
+        List<String> authorsList = new ArrayList<>();
+        while (authorsIt.hasNext()) {
+            authorsList.add(authorsIt.next().get("name").asText());
+        }
+
         String name = itemNod.get("name").asText();
-        return new Track(author, name);
+        return new Track(authorsList, name);
     }
 }
