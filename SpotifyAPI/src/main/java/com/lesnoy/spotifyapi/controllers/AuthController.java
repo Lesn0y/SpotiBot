@@ -12,9 +12,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Value("${spotify.registration-url}")
-    private String registrationUrl;
-
     private final OAuthService authService;
 
     public AuthController(OAuthService authService) {
@@ -30,6 +27,6 @@ public class AuthController {
     @GetMapping("/registration")
     @ResponseBody
     public String registration(@RequestParam("username") String username) {
-        return registrationUrl + username;
+        return authService.getRegistrationURL(username);
     }
 }

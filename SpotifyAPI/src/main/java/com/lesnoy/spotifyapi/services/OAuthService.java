@@ -20,6 +20,10 @@ public class OAuthService {
     private String clientId;
     @Value("${spotify.client-secret}")
     private String clientSecret;
+    @Value("${spotify.redirect-url}")
+    private String redirectUrl;
+    @Value("${spotify.registration-url}")
+    private String registrationUrl;
 
     private final TokenRepository tokenRepository;
 
@@ -38,13 +42,22 @@ public class OAuthService {
         }
     }
 
+    public String getRegistrationURL(String username) {
+        return registrationUrl + "?" +
+                "scope=user-read-playback-state&" +
+                "response_type=code&" +
+                "client_id=" + clientId + "&" +
+                "redirect_uri=" + redirectUrl + "&" +
+                "state=" + username;
+    }
+
     private JwtToken authorizationRequest(String code) {
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
                 .url("https://accounts.spotify.com/api/token?" +
                         "grant_type=authorization_code&" +
-                        "redirect_uri=https://spotibot-production-f13d.up.railway.app/success&" +
+                        "redirect_uri= " + redirectUrl + "&" +
                         "code=" + code)
                 .header("Authorization", getAuthorizationValue())
                 .header("Content-Type", "application/x-www-form-urlencoded")
