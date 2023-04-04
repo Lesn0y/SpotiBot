@@ -44,20 +44,20 @@ public class OAuthService {
 
     public String getRegistrationURL(String username) {
         return registrationUrl + "?" +
-                "scope=user-read-playback-state&" +
-                "response_type=code&" +
                 "client_id=" + clientId + "&" +
-                "redirect_uri=" + redirectUrl + "&" +
+                "response_type=code&" +
+                "redirect_uri=http://localhost:8080/auth/success" + "&" +
+                "scope=user-read-playback-state&" +
                 "state=" + username;
     }
 
     private JwtToken authorizationRequest(String code) {
         OkHttpClient client = new OkHttpClient();
-
+        logger.info("CODE - " + code);
         Request request = new Request.Builder()
                 .url("https://accounts.spotify.com/api/token?" +
                         "grant_type=authorization_code&" +
-                        "redirect_uri= " + redirectUrl + "&" +
+                        "redirect_uri=" + redirectUrl + "&" +
                         "code=" + code)
                 .header("Authorization", getAuthorizationValue())
                 .header("Content-Type", "application/x-www-form-urlencoded")
@@ -67,7 +67,6 @@ public class OAuthService {
         try (Response response = client.newCall(request).execute()) {
             ObjectMapper objectMapper = new ObjectMapper();
             ResponseBody responseBody = response.body();
-
             return objectMapper.readValue(responseBody.string(), JwtToken.class);
 
         } catch (IOException e) {
