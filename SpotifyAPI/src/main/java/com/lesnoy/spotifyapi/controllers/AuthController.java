@@ -1,6 +1,7 @@
 package com.lesnoy.spotifyapi.controllers;
 
 import com.lesnoy.spotifyapi.services.OAuthService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,13 +10,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
     private final OAuthService authService;
-
-    public AuthController(OAuthService authService) {
-        this.authService = authService;
-    }
 
     @GetMapping("/success")
     public void successCode(@RequestParam("code") String code,

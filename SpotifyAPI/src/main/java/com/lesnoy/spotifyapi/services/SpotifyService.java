@@ -3,6 +3,7 @@ package com.lesnoy.spotifyapi.services;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lesnoy.spotifyapi.entity.JwtToken;
 import com.lesnoy.spotifyapi.entity.Track;
+import lombok.RequiredArgsConstructor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -14,15 +15,12 @@ import java.io.IOException;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class SpotifyService {
 
     private final Logger logger = LoggerFactory.getLogger(SpotifyService.class);
 
     private final TokenRepository tokenRepository;
-
-    public SpotifyService(TokenRepository tokenRepository) {
-        this.tokenRepository = tokenRepository;
-    }
 
     public String getCurrentTrack(String username) {
         Optional<JwtToken> token = tokenRepository.findById(username);

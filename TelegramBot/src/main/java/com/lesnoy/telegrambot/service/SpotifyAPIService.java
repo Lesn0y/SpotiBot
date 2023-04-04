@@ -24,8 +24,7 @@ public class SpotifyAPIService {
 
             Response response = client.newCall(request).execute();
 
-            String authUrl = response.body().string();
-            return authUrl;
+            return response.body().string();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
