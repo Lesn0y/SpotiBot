@@ -9,8 +9,9 @@ import org.springframework.data.redis.core.RedisHash;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 @ToString
-public class JwtToken {
+public class SpotifyToken {
     @Id
     @JsonProperty("username")
     private String username;
@@ -24,9 +25,5 @@ public class JwtToken {
     private Integer expires;
     @JsonProperty("refresh_token")
     private String refreshToken;
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
 }
 
