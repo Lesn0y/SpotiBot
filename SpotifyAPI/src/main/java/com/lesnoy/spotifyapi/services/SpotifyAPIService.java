@@ -1,6 +1,8 @@
 package com.lesnoy.spotifyapi.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lesnoy.spotifyapi.config.TokenExpiredException;
+import com.lesnoy.spotifyapi.config.UserNotAuthorizedException;
 import com.lesnoy.spotifyapi.entity.SpotifyToken;
 import com.lesnoy.spotifyapi.entity.Track;
 import lombok.RequiredArgsConstructor;
@@ -22,18 +24,18 @@ public class SpotifyAPIService {
 
     private final TokenRepository tokenRepository;
 
-    public String getCurrentTrack(String username) {
+    public Track getCurrentTrack(String username) throws TokenExpiredException, UserNotAuthorizedException{
         Optional<SpotifyToken> token = tokenRepository.findById(username);
         if (token.isPresent()) {
             logger.info("Request the Spotify API to retrieve a '" + username + "' current track");
             return spotifyTrackRequest(token.get());
         } else {
             logger.info("User '" + username + "' has not been authorized before");
-            return "Unauthorized";
+            throw new UserNotAuthorizedException("User '" + username + "' has not been authorized before");
         }
     }
 
-    private String spotifyTrackRequest(SpotifyToken token) {
+    private Track spotifyTrackRequest(SpotifyToken token) throws TokenExpiredException{
 
         OkHttpClient client = new OkHttpClient();
 
@@ -45,7 +47,7 @@ public class SpotifyAPIService {
         try (Response response = client.newCall(request).execute()) {
             if (response.code() == 401) {
                 logger.info("Response code for " + token.getUsername() + " - " + response.code());
-                return "Token expired";
+                throw new TokenExpiredException();
             } else {
                 ObjectMapper objectMapper = new ObjectMapper();
                 String responseMessage;
@@ -53,14 +55,15 @@ public class SpotifyAPIService {
                     responseMessage = response.body().string();
                     Track track = objectMapper.readValue(responseMessage, Track.class);
                     logger.info(token.getUsername() + " response from Spotify API - '" + track.toString() + "'");
-                    return track.toString();
+                    return track;
                 }
             }
         } catch (IOException e) {
             logger.error("Spotify API 'Get Currently Playing Track' error");
             e.printStackTrace();
         }
-        return "Not Found";
+//        return "Not Found";
+        return null;
     }
 
 }
