@@ -27,6 +27,7 @@ public class TrackDeserializer extends StdDeserializer<Track> {
         JsonNode jsonNode = jp.getCodec().readTree(jp);
         JsonNode itemNod = jsonNode.get("item");
         JsonNode authorNode = itemNod.get("artists");
+        String trackUrl = itemNod.get("external_urls").get("spotify").asText();
 
         Iterator<JsonNode> authorsIt = authorNode.elements();
         List<String> authorsList = new ArrayList<>();
@@ -35,6 +36,6 @@ public class TrackDeserializer extends StdDeserializer<Track> {
         }
 
         String name = itemNod.get("name").asText();
-        return new Track(authorsList, name);
+        return new Track(authorsList, name, trackUrl);
     }
 }

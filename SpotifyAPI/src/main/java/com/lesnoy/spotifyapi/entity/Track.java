@@ -12,6 +12,7 @@ import java.util.List;
 public class Track {
     private List<String> author;
     private String name;
+    private String trackUrl;
 
     @Override
     public String toString() {

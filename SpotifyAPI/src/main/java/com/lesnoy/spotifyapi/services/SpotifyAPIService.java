@@ -62,7 +62,6 @@ public class SpotifyAPIService {
             logger.error("Spotify API 'Get Currently Playing Track' error");
             e.printStackTrace();
         }
-//        return "Not Found";
         return null;
     }
 
