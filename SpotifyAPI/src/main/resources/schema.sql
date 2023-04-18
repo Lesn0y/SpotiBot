@@ -8,5 +8,5 @@ CREATE TABLE IF NOT EXISTS spoti_bot.tokens
     token_type      VARCHAR(10),
     scope           VARCHAR(255),
     expires         INT,
-    expiration_time DATE
+    expiration_time TIMESTAMP
 );
