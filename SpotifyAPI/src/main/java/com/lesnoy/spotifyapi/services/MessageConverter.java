@@ -1,9 +1,9 @@
 package com.lesnoy.spotifyapi.services;
 
+import com.lesnoy.spotifyapi.entity.Track;
+
 public class MessageConverter {
-
-    public static String convertStringToLink(String track, String url) {
-        return "<a href='"+ url + "'>" + track + "</a>";
+    public static String convertStringToSongLink(Track track) {
+        return "<a href='"+ track.getTrackUrl() + "'>" + track + "</a>";
     }
-
 }

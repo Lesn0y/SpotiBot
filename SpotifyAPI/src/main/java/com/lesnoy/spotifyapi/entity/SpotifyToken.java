@@ -1,17 +1,20 @@
 package com.lesnoy.spotifyapi.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
 
-@RedisHash("Token")
+import java.io.Serializable;
+import java.util.Date;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @ToString
-public class SpotifyToken {
+@Entity
+@Table(name = "tokens", schema = "spoti_bot")
+public class SpotifyToken implements Serializable {
     @Id
     @JsonProperty("username")
     private String username;
@@ -25,5 +28,7 @@ public class SpotifyToken {
     private Integer expires;
     @JsonProperty("refresh_token")
     private String refreshToken;
+    @Column(name = "expiration_time")
+    private Date expirationTime;
 }
 
