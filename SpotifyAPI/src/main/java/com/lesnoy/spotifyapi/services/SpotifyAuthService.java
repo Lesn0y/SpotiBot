@@ -7,8 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -41,11 +39,11 @@ public class SpotifyAuthService {
                 "state=" + username;
     }
 
-    @Cacheable("tokens")
     public SpotifyToken getUserToken(String username) {
         log.info("Request to db, find '" + username + "' access key");
         Optional<SpotifyToken> token = tokenRepository.findById(username);
         if (token.isPresent() && isTokenValid(token.get())) {
+            log.info("Token find '" + username + "'success");
             return token.get();
         } else {
             return refreshToken(username);
@@ -62,7 +60,6 @@ public class SpotifyAuthService {
         }
     }
 
-    @CacheEvict(value = "tokens", allEntries = true)
     public SpotifyToken refreshToken(String username) {
         OkHttpClient client = new OkHttpClient();
 
@@ -105,7 +102,6 @@ public class SpotifyAuthService {
         return token.getExpirationTime().after(new Date());
     }
 
-    @CacheEvict(value = "tokens", allEntries = true)
     public SpotifyToken authorizationRequest(String code, String username) {
         OkHttpClient client = new OkHttpClient();
 

@@ -13,14 +13,13 @@ public class SpotifyService {
     private final SpotifyTrackService trackService;
 
     public String getRegistrationURL(String username) {
-        return authService.getRegistrationURL(username);
+        return MessageConverter.convertStringToRegUrl(authService.getRegistrationURL(username));
     }
 
     public String getCurrentTrack(String username) {
-        Track track = null;
         SpotifyToken token = authService.getUserToken(username);
         if (token != null) {
-            track = trackService.getCurrentTrack(username, token);
+            Track track = trackService.getCurrentTrack(username, token);
             return MessageConverter.convertStringToSongLink(track);
         } else {
             return authService.getRegistrationURL(username);
