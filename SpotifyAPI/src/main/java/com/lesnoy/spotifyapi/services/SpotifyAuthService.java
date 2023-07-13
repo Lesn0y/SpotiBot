@@ -43,7 +43,8 @@ public class SpotifyAuthService {
         log.info("Request to db, find '" + username + "' access key");
         Optional<SpotifyToken> token = tokenRepository.findById(username);
         if (token.isPresent() && isTokenValid(token.get())) {
-            log.info("Token find '" + username + "'success");
+            log.info("Token for '" + username + " find 'success\n" +
+                     "Token - " + token.get().getUsername() + ", " + token.get().getAccessToken());
             return token.get();
         } else {
             return refreshToken(username);
@@ -63,7 +64,7 @@ public class SpotifyAuthService {
     public SpotifyToken refreshToken(String username) {
         OkHttpClient client = new OkHttpClient();
 
-        SpotifyToken token = tokenRepository.findById(username).get();
+        SpotifyToken token = tokenRepository.findById(username).orElseThrow();
 
         log.info("Old " + username + " access token - " + token.getAccessToken());
 

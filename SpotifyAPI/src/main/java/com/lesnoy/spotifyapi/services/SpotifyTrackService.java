@@ -23,7 +23,7 @@ public class SpotifyTrackService {
     private Track spotifyTrackRequest(SpotifyToken token) {
 
         OkHttpClient client = new OkHttpClient();
-
+        log.info("REQUEST TOKEN - " + token.getUsername() + " - " + token.getAccessToken());
         Request request = new Request.Builder()
                 .url("https://api.spotify.com/v1/me/player/currently-playing")
                 .header("Authorization", "Bearer " + token.getAccessToken())
