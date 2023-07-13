@@ -16,9 +16,10 @@ public class AuthController {
     private final SpotifyService spotifyService;
 
     @GetMapping("/success")
-    public void successCode(@RequestParam("code") String code,
+    public String successCode(@RequestParam("code") String code,
                             @RequestParam("state") String username) {
         spotifyService.requestAccessToken(code, username);
+        return "success-page";
     }
 
     @GetMapping("/registration")
